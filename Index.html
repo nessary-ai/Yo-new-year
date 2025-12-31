@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Surprise for 2026 ✨</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary-gold: #f9d71c;
+            --bg-dark: #05070a;
+            --text-light: #ffffff;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .content-box {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 20px;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 8vw, 4rem);
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #f9d71c, #ffaa00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(249, 215, 28, 0.2);
+        }
+
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .time-segment {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            min-width: 70px;
+            border: 1px solid rgba(249, 215, 28, 0.2);
+        }
+
+        .time-value {
+            display: block;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+        }
+
+        .time-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+
+        #surprise-area {
+            display: none;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .message {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="content-box">
+        <div id="countdown-area">
+            <h1>Preparing 2026...</h1>
+            <p>The surprise unlocks at midnight.</p>
+            <div class="timer">
+                <div class="time-segment">
+                    <span class="time-value" id="hours">00</span>
+                    <span class="time-label">Hrs</span>
+                </div>
+                <div class="time-segment">
+                    <span class="time-value" id="minutes">00</span>
+                    <span class="time-label">Min</span>
+                </div>
+                <div class="time-segment">
+                    <span class="time-value" id="seconds">00</span>
+                    <span class="time-label">Sec</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="surprise-area">
+            <h1>Happy New Year 2026! 🥂</h1>
+            <div class="message">
+                Every end is just a new beginning. <br>
+                May this year be your most incredible chapter yet.
+            </div>
+            <p>✨ Stay Extraordinary ✨</p>
+        </div>
+    </div>
+
+    <script>
+        // TARGET DATE: January 1, 2026
+        const targetDate = new Date("Jan 1, 2026 00:00:00").getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            // If the date has passed
+            if (distance < 0) {
+                showSurprise();
+                return;
+            }
+
+            // Calculations
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+        }
+
+        function showSurprise() {
+            document.getElementById("countdown-area").classList.add("hidden");
+            document.getElementById("surprise-area").style.display = "block";
+            
+            // Trigger Confetti
+            launchConfetti();
+            // Keep confetti going for 10 seconds
+            const end = Date.now() + (10 * 1000);
+
+            const frame = () => {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#f9d71c', '#ffffff']
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#f9d71c', '#ffffff']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            };
+            frame();
+        }
+
+        function launchConfetti() {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#f9d71c', '#ffaa00', '#ffffff']
+            });
+        }
+
+        // Run countdown every second
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+</body>
+</html>

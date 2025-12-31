@@ -3,201 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Surprise for 2026 ✨</title>
+    <title>Unlocked: 2026 ✨</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-gold: #f9d71c;
-            --bg-dark: #05070a;
-            --text-light: #ffffff;
+            --primary-gold: #ffd700;
+            --accent-pink: #ff007a;
+            --glass: rgba(255, 255, 255, 0.1);
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-dark);
-            color: var(--text-light);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(45deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
         }
 
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .content-box {
-            position: relative;
+        /* Floating Stars */
+        .stars {
+            position: absolute; width: 100%; height: 100%;
+            background: transparent url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+            opacity: 0.3; z-index: 1;
+        }
+
+        .container {
             z-index: 10;
             text-align: center;
-            padding: 20px;
-            max-width: 600px;
+            backdrop-filter: blur(15px);
+            background: var(--glass);
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            max-width: 90%;
+            width: 450px;
+            transform: translateY(0);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
 
         h1 {
-            font-size: clamp(2rem, 8vw, 4rem);
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #f9d71c, #ffaa00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 10px 30px rgba(249, 215, 28, 0.2);
+            font-weight: 800; font-size: 2.5rem; margin-bottom: 10px;
+            text-transform: uppercase; letter-spacing: 2px;
+            background: linear-gradient(to bottom, #fff, #ffd700);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        .timer {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 30px;
+        .countdown-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px;
         }
 
-        .time-segment {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 15px;
-            border-radius: 12px;
-            min-width: 70px;
-            border: 1px solid rgba(249, 215, 28, 0.2);
+        .box {
+            background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px;
         }
 
-        .time-value {
-            display: block;
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--primary-gold);
+        .num { display: block; font-size: 1.8rem; font-weight: 600; color: var(--primary-gold); }
+        .label { font-size: 0.7rem; text-transform: uppercase; opacity: 0.7; }
+
+        /* The Reveal Button */
+        #reveal-btn {
+            background: linear-gradient(45deg, var(--primary-gold), #ffa500);
+            color: #000; border: none; padding: 20px 40px;
+            font-size: 1.2rem; font-weight: 700; border-radius: 50px;
+            cursor: pointer; margin-top: 30px; box-shadow: 0 10px 20px rgba(255, 215, 0, 0.4);
+            transition: all 0.3s ease; display: none;
         }
 
-        .time-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.7;
-        }
-
-        #surprise-area {
-            display: none;
-            animation: fadeIn 2s ease-in-out;
-        }
-
-        .message {
-            font-size: 1.5rem;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        #reveal-btn:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(255, 215, 0, 0.6); }
 
         .hidden { display: none !important; }
+
+        .message-text { font-size: 1.2rem; line-height: 1.6; color: #eee; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="content-box">
-        <div id="countdown-area">
-            <h1>Preparing 2026...</h1>
-            <p>The surprise unlocks at midnight.</p>
-            <div class="timer">
-                <div class="time-segment">
-                    <span class="time-value" id="hours">00</span>
-                    <span class="time-label">Hrs</span>
-                </div>
-                <div class="time-segment">
-                    <span class="time-value" id="minutes">00</span>
-                    <span class="time-label">Min</span>
-                </div>
-                <div class="time-segment">
-                    <span class="time-value" id="seconds">00</span>
-                    <span class="time-label">Sec</span>
-                </div>
+    <div class="stars"></div>
+
+    <audio id="music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container" id="main-card">
+        <div id="countdown-ui">
+            <h1>2026 Arriving</h1>
+            <p>A new chapter is about to unlock...</p>
+            <div class="countdown-grid">
+                <div class="box"><span class="num" id="h">00</span><span class="label">Hours</span></div>
+                <div class="box"><span class="num" id="m">00</span><span class="label">Mins</span></div>
+                <div class="box"><span class="num" id="s">00</span><span class="label">Secs</span></div>
             </div>
         </div>
 
-        <div id="surprise-area">
-            <h1>Happy New Year 2026! 🥂</h1>
-            <div class="message">
-                Every end is just a new beginning. <br>
-                May this year be your most incredible chapter yet.
-            </div>
-            <p>✨ Stay Extraordinary ✨</p>
+        <div id="surprise-ui" class="hidden">
+            <h1>HAPPY 2026 ✨</h1>
+            <p class="message-text">May this year be as creative, bold, and brilliant as you are. Cheers to new heights!</p>
         </div>
+
+        <button id="reveal-btn">OPEN YOUR 2026 SURPRISE 🎁</button>
     </div>
 
     <script>
-        // TARGET DATE: January 1, 2026
-        const targetDate = new Date("Jan 1, 2026 00:00:00").getTime();
+        // Set target to Midnight Jan 1, 2026
+        const target = new Date("Jan 1, 2026 00:00:00").getTime();
+        const revealBtn = document.getElementById('reveal-btn');
+        const countdownUI = document.getElementById('countdown-ui');
+        const surpriseUI = document.getElementById('surprise-ui');
+        const music = document.getElementById('music');
 
-        function updateCountdown() {
+        function update() {
             const now = new Date().getTime();
-            const distance = targetDate - now;
+            const diff = target - now;
 
-            // If the date has passed
-            if (distance < 0) {
-                showSurprise();
+            if (diff <= 0) {
+                // Time has reached! Hide countdown, show the reveal button
+                countdownUI.classList.add('hidden');
+                revealBtn.style.display = 'inline-block';
                 return;
             }
 
-            // Calculations
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
 
-            document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
-            document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
-            document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+            document.getElementById('h').innerText = h.toString().padStart(2, '0');
+            document.getElementById('m').innerText = m.toString().padStart(2, '0');
+            document.getElementById('s').innerText = s.toString().padStart(2, '0');
         }
 
-        function showSurprise() {
-            document.getElementById("countdown-area").classList.add("hidden");
-            document.getElementById("surprise-area").style.display = "block";
+        revealBtn.addEventListener('click', () => {
+            revealBtn.classList.add('hidden');
+            surpriseUI.classList.remove('hidden');
+            music.play();
             
-            // Trigger Confetti
-            launchConfetti();
-            // Keep confetti going for 10 seconds
-            const end = Date.now() + (10 * 1000);
+            // Grand Fireworks Effect
+            const duration = 15 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
-            const frame = () => {
-                confetti({
-                    particleCount: 3,
-                    angle: 60,
-                    spread: 55,
-                    origin: { x: 0 },
-                    colors: ['#f9d71c', '#ffffff']
-                });
-                confetti({
-                    particleCount: 3,
-                    angle: 120,
-                    spread: 55,
-                    origin: { x: 1 },
-                    colors: ['#f9d71c', '#ffffff']
-                });
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
 
-                if (Date.now() < end) {
-                    requestAnimationFrame(frame);
-                }
-            };
-            frame();
-        }
+            const interval = setInterval(function() {
+                const timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                const particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        });
 
-        function launchConfetti() {
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#f9d71c', '#ffaa00', '#ffffff']
-            });
-        }
-
-        // Run countdown every second
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
+        setInterval(update, 1000);
+        update();
     </script>
 </body>
 </html>
